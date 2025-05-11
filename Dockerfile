@@ -1,4 +1,4 @@
-FROM node:18-alpine3.18
+FROM node:18-alpine
 
 WORKDIR /app
 
@@ -8,11 +8,8 @@ COPY package*.json ./
 # Install dependencies
 RUN npm install
 
-# Copy app source code
+# Copy the rest of the application code
 COPY . .
-
-# Build frontend assets if needed (if using a build step)
-RUN npm run build
 
 # Expose port
 EXPOSE 3000

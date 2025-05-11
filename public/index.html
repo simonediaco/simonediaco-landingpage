@@ -3,393 +3,2256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simone Diaco | Software Developer</title>
+    <title>Simone Diaco | Creative Developer</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <style>
+        /* === VARIABLES === */
+        :root {
+            --bg-color: #0a0a0a;
+            --text-primary: #ffffff;
+            --text-secondary: rgba(255, 255, 255, 0.7);
+            --accent-1: #ff2d75; /* Hot pink */
+            --accent-2: #2dffd5; /* Cyan */
+            --accent-3: #fd4; /* Yellow */
+            --dark-surface: rgba(25, 25, 25, 0.5);
+            --font-main: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            --font-alt: 'Space Grotesk', 'Arial', sans-serif;
+            
+            --transition-slow: 0.7s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            --transition-medium: 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+            --transition-fast: 0.2s ease;
+        }
+
+        /* === RESET & GLOBAL === */
+        @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-primary);
+            font-family: var(--font-main);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* Scrollbar styling */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(to bottom, var(--accent-1), var(--accent-2));
+            border-radius: 3px;
+        }
+
+        /* === BACKGROUND EFFECTS === */
+        .noise-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -2;
+            background-image: url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIiB4PSIwIiB5PSIwIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjc1IiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxwYXRoIGZpbHRlcj0idXJsKCNhKSIgb3BhY2l0eT0iLjA1IiBkPSJNMCAwaDMwMHYzMDBIMHoiLz48L3N2Zz4=');
+        }
+
+        .gradient-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: -3;
+        }
+
+        .gradient-sphere {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(60px);
+            opacity: 0.15;
+            animation: float 30s ease infinite alternate;
+        }
+
+        .sphere-1 {
+            width: 60vw;
+            height: 60vw;
+            background: radial-gradient(circle, var(--accent-1), transparent 70%);
+            top: -20vw;
+            right: -20vw;
+            animation-delay: -2s;
+        }
+
+        .sphere-2 {
+            width: 50vw;
+            height: 50vw;
+            background: radial-gradient(circle, var(--accent-2), transparent 70%);
+            bottom: -10vw;
+            left: -10vw;
+            animation-delay: -5s;
+        }
+
+        .sphere-3 {
+            width: 30vw;
+            height: 30vw;
+            background: radial-gradient(circle, var(--accent-3), transparent 70%);
+            top: 40vh;
+            left: 30vw;
+            animation-delay: -8s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0);
+            }
+            33% {
+                transform: translate(5vw, -5vh);
+            }
+            66% {
+                transform: translate(-3vw, 2vh);
+            }
+            100% {
+                transform: translate(0, 0);
+            }
+        }
+
+        /* === LOADER === */
+        .loader-wrapper {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .loader {
+            position: relative;
+            width: 80px;
+            height: 80px;
+        }
+
+        .loader-ring {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            border-top-color: var(--accent-1);
+            animation: loader-spin 1.5s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+        }
+
+        .loader-ring:nth-child(2) {
+            width: 70%;
+            height: 70%;
+            top: 15%;
+            left: 15%;
+            border-top-color: var(--accent-2);
+            animation-direction: reverse;
+            animation-duration: 2s;
+        }
+
+        .loader-ring:nth-child(3) {
+            width: 40%;
+            height: 40%;
+            top: 30%;
+            left: 30%;
+            border-top-color: var(--accent-3);
+            animation-duration: 1s;
+        }
+
+        @keyframes loader-spin {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loader-text {
+            position: relative;
+            margin-top: 30px;
+            font-size: 18px;
+            letter-spacing: 8px;
+            text-transform: uppercase;
+            color: var(--text-primary);
+            overflow: hidden;
+        }
+
+        .loader-text::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: var(--accent-1);
+            animation: typewriter 3s steps(12) forwards infinite;
+        }
+
+        @keyframes typewriter {
+            0%, 100% {
+                left: 0;
+            }
+            50%, 60% {
+                left: 100%;
+            }
+        }
+
+        /* === NAVIGATION === */
+        .navbar {
+            position: fixed;
+            top: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            background: rgba(10, 10, 10, 0.2);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 15px 30px;
+            border-radius: 100px;
+            box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+            display: flex;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 5px;
+            list-style: none;
+        }
+
+        .nav-links li a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            padding: 8px 20px;
+            border-radius: 100px;
+            font-size: 15px;
+            font-weight: 500;
+            transition: var(--transition-fast);
+            display: block;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-links li a::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to right, var(--accent-1), var(--accent-2));
+            opacity: 0;
+            transition: var(--transition-fast);
+            z-index: -1;
+            border-radius: inherit;
+        }
+
+        .nav-links li a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-links li a:hover::before {
+            opacity: 0.15;
+        }
+
+        .nav-links li a.active {
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .nav-links li a.active::before {
+            opacity: 0.2;
+        }
+
+        .language-switch {
+            display: flex;
+            align-items: center;
+            margin-left: 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 100px;
+            padding: 5px;
+        }
+
+        .language-switch button {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-weight: 500;
+            padding: 3px 10px;
+            cursor: pointer;
+            border-radius: 100px;
+            transition: var(--transition-fast);
+            font-size: 14px;
+        }
+
+        .language-switch button.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: var(--text-primary);
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        /* === SECTIONS === */
+        section {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            padding: 100px 0;
+            position: relative;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 90%;
+            margin: 0 auto;
+            position: relative;
+        }
+
+        /* === HERO SECTION === */
+        .hero {
+            position: relative;
+            overflow: hidden;
+            padding-top: 80px;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            align-items: center;
+            gap: 60px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-text {
+            position: relative;
+        }
+
+        .hero-title {
+            font-size: 5rem;
+            font-weight: 700;
+            line-height: 1.1;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-title .text-wrapper {
+            display: block;
+        }
+
+        .hero-title .text-wrapper:nth-child(2) {
+            margin-left: 4rem;
+        }
+
+        .hero-title .gradient-text {
+            background: linear-gradient(to right, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+            color: var(--text-secondary);
+            line-height: 1.6;
+            margin-bottom: 40px;
+            max-width: 500px;
+            font-family: var(--font-alt);
+        }
+
+        .hero-cta {
+            display: flex;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 15px 35px;
+            font-size: 16px;
+            font-weight: 600;
+            text-decoration: none;
+            border-radius: 100px;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+            transition: var(--transition-medium);
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 1;
+            transition: var(--transition-medium);
+        }
+
+        .btn-primary {
+            color: var(--bg-color);
+        }
+
+        .btn-primary::before {
+            background: linear-gradient(to right, var(--accent-1), var(--accent-2));
+        }
+
+        .btn-primary:hover {
+            color: var(--text-primary);
+        }
+
+        .btn-primary:hover::before {
+            opacity: 0.8;
+        }
+
+        .btn-outline {
+            color: var(--text-primary);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .btn-outline::before {
+            background: rgba(255, 255, 255, 0.05);
+            opacity: 0;
+        }
+
+        .btn-outline:hover::before {
+            opacity: 1;
+        }
+
+        .hero-image {
+            position: relative;
+        }
+
+        .hero-img-container {
+            position: relative;
+            width: 400px;
+            height: 530px;
+            margin-left: auto;
+            border-radius: 30px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        }
+
+        .hero-img-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.7s ease;
+        }
+
+        .hero-img-container:hover img {
+            transform: scale(1.05);
+        }
+
+        .hero-img-frame {
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            right: -15px;
+            bottom: -15px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 40px;
+            pointer-events: none;
+        }
+
+        .hero-img-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 70%, rgba(10, 10, 10, 0.8));
+            pointer-events: none;
+        }
+
+        .hero-socials {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            position: absolute;
+            left: 40px;
+            bottom: 40px;
+        }
+
+        .hero-socials a {
+            color: var(--text-secondary);
+            font-size: 20px;
+            transition: var(--transition-fast);
+            display: block;
+        }
+
+        .hero-socials a:hover {
+            color: var(--accent-1);
+            transform: translateY(-5px);
+        }
+
+        .hero-scroll {
+            position: absolute;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            letter-spacing: 2px;
+            transition: var(--transition-fast);
+        }
+
+        .hero-scroll:hover {
+            color: var(--text-primary);
+        }
+
+        .hero-scroll i {
+            font-size: 24px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-15px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* === ABOUT SECTION === */
+        .about {
+            position: relative;
+        }
+
+        .about-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-subtitle {
+            display: inline-block;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--accent-2);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+        }
+
+        .section-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60px;
+            height: 4px;
+            background: linear-gradient(to right, var(--accent-1), var(--accent-2));
+            border-radius: 2px;
+        }
+
+        .section-description {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+            line-height: 1.6;
+            font-family: var(--font-alt);
+        }
+
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .about-image {
+            position: relative;
+        }
+
+        .about-img-main {
+            position: relative;
+            width: 350px;
+            height: 450px;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 15px 45px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+        }
+
+        .about-img-main img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .about-img-secondary {
+            position: absolute;
+            width: 200px;
+            height: 240px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            right: -50px;
+            bottom: -30px;
+            z-index: 2;
+        }
+
+        .about-img-secondary img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .about-img-frame {
+            position: absolute;
+            top: -15px;
+            left: -15px;
+            width: 380px;
+            height: 480px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            z-index: 0;
+        }
+
+        .about-details {
+            padding-left: 30px;
+        }
+
+        .about-details h3 {
+            font-size: 2rem;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .about-details h3::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(to right, var(--accent-1), var(--accent-2));
+            border-radius: 1.5px;
+        }
+
+        .about-text {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 30px;
+            font-family: var(--font-alt);
+        }
+
+        .about-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+            margin-top: 40px;
+        }
+
+        .info-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .info-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            color: var(--accent-1);
+            font-size: 18px;
+        }
+
+        .info-content h4 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 5px;
+        }
+
+        .info-content p {
+            font-size: 18px;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        /* === SKILLS SECTION === */
+        .skills {
+            position: relative;
+            padding-top: 150px;
+            padding-bottom: 150px;
+        }
+
+        .skills-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 30px;
+        }
+
+        .skill-card {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: var(--transition-medium);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .skill-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--accent-1), var(--accent-2));
+            opacity: 0;
+            transition: var(--transition-medium);
+        }
+
+        .skill-card:hover::before {
+            opacity: 1;
+        }
+
+        .skill-icon {
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            font-size: 24px;
+            margin-bottom: 25px;
+            color: var(--accent-2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, var(--accent-1), var(--accent-2));
+            opacity: 0;
+            transition: var(--transition-medium);
+            z-index: -1;
+        }
+
+        .skill-card:hover .skill-icon {
+            color: var(--text-primary);
+        }
+
+        .skill-card:hover .skill-icon::before {
+            opacity: 1;
+        }
+
+        .skill-title {
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .skill-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .skill-tag {
+            padding: 8px 16px;
+            border-radius: 100px;
+            background: rgba(255, 255, 255, 0.05);
+            font-size: 14px;
+            transition: var(--transition-fast);
+        }
+
+        .skill-card:hover .skill-tag {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        /* === EXPERIENCE SECTION === */
+        .experience {
+            position: relative;
+        }
+
+        .experience-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .experience-timeline {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .timeline-line {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 2px;
+            height: 100%;
+            background: linear-gradient(to bottom, var(--accent-1), var(--accent-2));
+            transform: translateX(-50%);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 80px;
+            width: 100%;
+        }
+
+        .timeline-content {
+            width: calc(50% - 40px);
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: var(--transition-medium);
+            position: relative;
+        }
+
+        .timeline-content:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.05);
+        }
+
+        .timeline-item:nth-child(odd) .timeline-content {
+            margin-right: auto;
+        }
+
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: auto;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            top: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 16px;
+            height: 16px;
+            background: linear-gradient(to right, var(--accent-1), var(--accent-2));
+            border-radius: 50%;
+            z-index: 1;
+        }
+
+        .timeline-item::after {
+            content: '';
+            position: absolute;
+            top: 30px;
+            width: 40px;
+            height: 2px;
+            background: linear-gradient(to right, var(--accent-1), var(--accent-2));
+        }
+
+        .timeline-item:nth-child(odd)::after {
+            right: calc(50% + 8px);
+        }
+
+        .timeline-item:nth-child(even)::after {
+            left: calc(50% + 8px);
+        }
+
+        .timeline-date {
+            position: absolute;
+            top: -20px;
+            background: linear-gradient(to right, var(--accent-1), var(--accent-2));
+            color: var(--bg-color);
+            padding: 8px 20px;
+            border-radius: 100px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .timeline-item:nth-child(odd) .timeline-date {
+            right: 0;
+        }
+
+        .timeline-item:nth-child(even) .timeline-date {
+            left: 0;
+        }
+
+        .timeline-title {
+            font-size: 1.4rem;
+            margin-bottom: 10px;
+        }
+
+        .timeline-subtitle {
+            font-size: 1.1rem;
+            color: var(--accent-2);
+            margin-bottom: 20px;
+        }
+
+        .timeline-description {
+            color: var(--text-secondary);
+            line-height: 1.6;
+            font-family: var(--font-alt);
+        }
+
+        /* === CONTACT SECTION === */
+        .contact {
+            position: relative;
+        }
+
+        .contact-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .contact-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            align-items: center;
+        }
+
+        .contact-info {
+            padding-right: 30px;
+        }
+
+        .contact-title {
+            font-size: 2.5rem;
+            margin-bottom: 25px;
+            position: relative;
+        }
+
+        .contact-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(to right, var(--accent-1), var(--accent-2));
+            border-radius: 1.5px;
+        }
+
+        .contact-text {
+            color: var(--text-secondary);
+            font-size: 1.05rem;
+            line-height: 1.7;
+            margin-bottom: 40px;
+            font-family: var(--font-alt);
+        }
+
+        .contact-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 20px;
+            margin-bottom: 30px;
+            transition: var(--transition-medium);
+        }
+
+        .contact-item:hover {
+            transform: translateX(10px);
+        }
+
+        .contact-icon {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 14px;
+            font-size: 20px;
+            color: var(--accent-1);
+            transition: var(--transition-medium);
+        }
+
+        .contact-item:hover .contact-icon {
+            background: linear-gradient(45deg, var(--accent-1), var(--accent-2));
+            color: var(--bg-color);
+        }
+
+        .contact-item-content h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+
+        .contact-item-content a,
+        .contact-item-content p {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition-fast);
+            font-size: 1.05rem;
+        }
+
+        .contact-item:hover .contact-item-content a,
+        .contact-item:hover .contact-item-content p {
+            color: var(--text-primary);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 15px;
+            margin-top: 40px;
+        }
+
+        .social-link {
+            width: 45px;
+            height: 45px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            color: var(--text-secondary);
+            font-size: 18px;
+            transition: var(--transition-medium);
+        }
+
+        .social-link:hover {
+            transform: translateY(-8px);
+            background: linear-gradient(45deg, var(--accent-1), var(--accent-2));
+            color: var(--bg-color);
+        }
+
+        .contact-form {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .contact-form::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--accent-1), var(--accent-2));
+        }
+
+        .form-title {
+            font-size: 1.5rem;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-size: 16px;
+            transition: var(--transition-fast);
+        }
+
+        .form-control:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 150px;
+        }
+
+        .form-button {
+            width: 100%;
+            padding: 15px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(to right, var(--accent-1), var(--accent-2));
+            color: var(--bg-color);
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition-medium);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .form-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            transform: translateX(-100%);
+            transition: var(--transition-medium);
+        }
+
+        .form-button:hover::before {
+            transform: translateX(0);
+        }
+
+        /* === FOOTER === */
+        .footer {
+            background: rgba(10, 10, 10, 0.5);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            padding: 60px 0 30px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(to right, transparent, var(--accent-1), var(--accent-2), transparent);
+        }
+
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+        }
+
+        .footer-logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .footer-logo span {
+            background: linear-gradient(to right, var(--accent-1), var(--accent-2));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-fill-color: transparent;
+        }
+
+        .footer-text {
+            color: var(--text-secondary);
+            max-width: 350px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+            font-family: var(--font-alt);
+        }
+
+        .footer-links-title {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            position: relative;
+            display: inline-block;
+        }
+
+        .footer-links-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 30px;
+            height: 2px;
+            background: linear-gradient(to right, var(--accent-1), var(--accent-2));
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 12px;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: var(--transition-fast);
+            display: inline-block;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-2);
+            transform: translateX(5px);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            padding-top: 30px;
+            text-align: center;
+        }
+
+        .footer-copyright {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .footer-languages {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .footer-language {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-size: 14px;
+            transition: var(--transition-fast);
+        }
+
+        .footer-language:hover,
+        .footer-language.active {
+            color: var(--accent-1);
+        }
+
+        /* Animated Element Classes */
+        .animate-element {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+
+        .animate-element.animate-in {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* === RESPONSIVE STYLES === */
+        @media (max-width: 1200px) {
+            .hero-title {
+                font-size: 4rem;
+            }
+            
+            .hero-img-container {
+                width: 350px;
+                height: 470px;
+            }
+            
+            .contact-content {
+                gap: 40px;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .hero-content,
+            .about-content,
+            .contact-content {
+                grid-template-columns: 1fr;
+                gap: 50px;
+            }
+            
+            .hero-text {
+                text-align: center;
+                order: 2;
+            }
+            
+            .hero-title .text-wrapper:nth-child(2) {
+                margin-left: 0;
+            }
+            
+            .hero-subtitle {
+                margin: 0 auto 30px;
+            }
+            
+            .hero-cta {
+                justify-content: center;
+            }
+            
+            .hero-image {
+                order: 1;
+                display: flex;
+                justify-content: center;
+            }
+            
+            .hero-img-container {
+                width: 300px;
+                height: 400px;
+            }
+            
+            .hero-socials {
+                position: static;
+                flex-direction: row;
+                justify-content: center;
+                margin-top: 40px;
+            }
+            
+            .about-image {
+                display: flex;
+                justify-content: center;
+                margin-bottom: 30px;
+            }
+            
+            .about-details {
+                padding-left: 0;
+                text-align: center;
+            }
+            
+            .about-details h3::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .about-info {
+                justify-content: center;
+            }
+            
+            .contact-info {
+                padding-right: 0;
+                text-align: center;
+                margin-bottom: 30px;
+            }
+            
+            .contact-title::after {
+                left: 50%;
+                transform: translateX(-50%);
+            }
+            
+            .contact-item {
+                justify-content: center;
+            }
+            
+            .social-links {
+                justify-content: center;
+            }
+            
+            .timeline-item::before,
+            .timeline-item::after,
+            .timeline-line {
+                display: none;
+            }
+            
+            .timeline-content {
+                width: 100%;
+            }
+            
+            .timeline-date {
+                position: relative;
+                top: auto;
+                display: inline-block;
+                margin-bottom: 20px;
+            }
+            
+            .timeline-item:nth-child(odd) .timeline-date,
+            .timeline-item:nth-child(even) .timeline-date {
+                left: auto;
+                right: auto;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                gap: 40px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                top: 20px;
+                width: 90%;
+            }
+            
+            .nav-container {
+                width: 100%;
+                justify-content: space-between;
+            }
+            
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background: rgba(15, 15, 15, 0.95);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                gap: 20px;
+                transition: right 0.3s ease;
+                z-index: 1000;
+            }
+            
+            .nav-links.active {
+                right: 0;
+            }
+            
+            .nav-links li a {
+                font-size: 18px;
+            }
+            
+            .menu-toggle {
+                display: block;
+            }
+            
+            .hero-title {
+                font-size: 3rem;
+            }
+            
+            .section-title {
+                font-size: 2.5rem;
+            }
+            
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 576px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .btn {
+                padding: 12px 25px;
+                font-size: 15px;
+            }
+            
+            .hero-img-container {
+                width: 260px;
+                height: 350px;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .about-img-main {
+                width: 280px;
+                height: 360px;
+            }
+            
+            .about-img-secondary {
+                width: 160px;
+                height: 190px;
+            }
+            
+            .about-img-frame {
+                width: 310px;
+                height: 390px;
+            }
+            
+            .about-info {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-form {
+                padding: 30px 20px;
+            }
+        }
+    </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <a href="#" class="logo">SD</a>
-            <div class="nav">
-                <ul class="nav-links">
-                    <li><a href="#home" class="active" data-i18n="home">Home</a></li>
-                    <li><a href="#about" data-i18n="about">About</a></li>
-                    <li><a href="#experience" data-i18n="experience">Experience</a></li>
-                    <li><a href="#skills" data-i18n="skills">Skills</a></li>
-                    <li><a href="#projects" data-i18n="projects">Projects</a></li>
-                    <li><a href="#education" data-i18n="education">Education</a></li>
-                    <li><a href="#contact" data-i18n="contact">Contact</a></li>
-                </ul>
-                <div class="language-switch">
-                    <button class="active" data-lang="en">EN</button>
-                    <span>|</span>
-                    <button data-lang="it">IT</button>
-                </div>
-                <button class="mobile-menu-btn">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
+    <!-- Noise Texture Background -->
+    <div class="noise-bg"></div>
+    
+    <!-- Gradient Background -->
+    <div class="gradient-bg">
+        <div class="gradient-sphere sphere-1"></div>
+        <div class="gradient-sphere sphere-2"></div>
+        <div class="gradient-sphere sphere-3"></div>
+    </div>
+    
+    <!-- Page Loader -->
+    <div class="loader-wrapper">
+        <div class="loader">
+            <div class="loader-ring"></div>
+            <div class="loader-ring"></div>
+            <div class="loader-ring"></div>
         </div>
-    </header>
-
+        <div class="loader-text">SIMONE DIACO</div>
+    </div>
+    
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <ul class="nav-links">
+                <li><a href="#home" class="active" data-i18n="home">Home</a></li>
+                <li><a href="#about" data-i18n="about">About</a></li>
+                <li><a href="#skills" data-i18n="skills">Skills</a></li>
+                <li><a href="#experience" data-i18n="experience">Experience</a></li>
+                <li><a href="#contact" data-i18n="contact">Contact</a></li>
+            </ul>
+            <div class="language-switch">
+                <button class="active" data-lang="en">EN</button>
+                <button data-lang="it">IT</button>
+            </div>
+            <button class="menu-toggle">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+    </nav>
+    
     <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="container">
             <div class="hero-content">
-                <div class="hero-text slide-in-left">
-                    <h1>Hi, I'm <span>Simone Diaco</span></h1>
-                    <p data-i18n="hero-subtitle">Software Developer specializing in healthcare data solutions and full-stack development.</p>
-                    <a href="#contact" class="btn" data-i18n="hire-me">Hire Me</a>
-                    <a href="#projects" class="btn btn-outline" data-i18n="projects">Projects</a>
+                <div class="hero-text animate-element">
+                    <h1 class="hero-title">
+                        <span class="text-wrapper" data-i18n="hero-title-1">Hi, I'm</span>
+                        <span class="text-wrapper"><span class="gradient-text">Simone Diaco</span></span>
+                    </h1>
+                    <p class="hero-subtitle" data-i18n="hero-subtitle">Creative software developer specializing in healthcare data solutions and innovative digital tools, with a passion for creating impactful technology.</p>
+                    <div class="hero-cta">
+                        <a href="#contact" class="btn btn-primary" data-i18n="contact-me">Contact Me</a>
+                        <a href="#about" class="btn btn-outline" data-i18n="learn-more">Learn More</a>
+                    </div>
                 </div>
-                <div class="hero-image slide-in-right">
-                    <img src="img/profile.jpg" alt="Simone Diaco">
+                <div class="hero-image animate-element">
+                    <div class="hero-img-container">
+                        <img src="/api/placeholder/400/550" alt="Simone Diaco">
+                        <div class="hero-img-overlay"></div>
+                    </div>
+                    <div class="hero-img-frame"></div>
+                    <div class="hero-socials">
+                        <a href="https://www.linkedin.com/in/simone-diaco/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+                        <a href="#"><i class="fab fa-github"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                    </div>
                 </div>
             </div>
         </div>
+        <a href="#about" class="hero-scroll">
+            <span data-i18n="scroll-down">Scroll Down</span>
+            <i class="fas fa-chevron-down"></i>
+        </a>
     </section>
-
+    
     <!-- About Section -->
     <section id="about" class="about">
         <div class="container">
-            <div class="section-title">
-                <h2 data-i18n="about-me">About Me</h2>
+            <div class="about-header animate-element">
+                <span class="section-subtitle" data-i18n="discover">Discover</span>
+                <h2 class="section-title" data-i18n="about-me">About Me</h2>
+                <p class="section-description" data-i18n="about-description-short">Get to know me better and discover what drives my passion for crafting innovative digital solutions.</p>
             </div>
             <div class="about-content">
-                <div class="about-text">
+                <div class="about-image animate-element">
+                    <div class="about-img-main">
+                        <img src="/api/placeholder/350/450" alt="Simone Diaco">
+                    </div>
+                    <div class="about-img-secondary">
+                        <img src="/api/placeholder/200/250" alt="Simone Diaco">
+                    </div>
+                    <div class="about-img-frame"></div>
+                </div>
+                <div class="about-details animate-element">
                     <h3 data-i18n="software-developer">Software Developer</h3>
-                    <p data-i18n="about-description">I'm a passionate software developer with over 6 years of experience, specializing in healthcare data solutions and full-stack development. I have extensive experience with ETL processes, standardized data models (OMOP CDM), and building innovative digital tools for healthcare professionals and patients.</p>
+                    <p class="about-text" data-i18n="about-text-1">I'm a passionate software developer with over 6 years of experience, specializing in healthcare data solutions and full-stack development. I have extensive experience with ETL processes, standardized data models (OMOP CDM), and building innovative digital tools for healthcare professionals and patients.</p>
+                    <p class="about-text" data-i18n="about-text-2">My expertise spans across various programming languages and frameworks, allowing me to adapt to different project requirements and deliver efficient, scalable solutions. I'm particularly interested in creating software that makes a positive impact on healthcare systems and patient outcomes.</p>
                     <div class="about-info">
                         <div class="info-item">
-                            <i class="fas fa-user"></i>
-                            <span data-i18n="name">Name:</span> Simone Diaco
+                            <div class="info-icon">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="info-content">
+                                <h4 data-i18n="name">Name</h4>
+                                <p>Simone Diaco</p>
+                            </div>
                         </div>
                         <div class="info-item">
-                            <i class="fas fa-envelope"></i>
-                            <span data-i18n="email">Email:</span> simodiaco@gmail.com
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-phone"></i>
-                            <span data-i18n="phone">Phone:</span> (+39) 3420421111
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <span data-i18n="location">Location:</span> Roma, Italy
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-calendar-alt"></i>
-                            <span data-i18n="birthday">Birthday:</span> May 27, 1993
-                        </div>
-                        <div class="info-item">
-                            <i class="fas fa-globe"></i>
-                            <span data-i18n="nationality">Nationality:</span> Italian
-                        </div>
-                    </div>
-                </div>
-                <div class="about-image">
-                    <img src="img/about.jpg" alt="About Me">
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Experience Section -->
-    <section id="experience" class="experience">
-        <div class="container">
-            <div class="section-title">
-                <h2 data-i18n="experience">Experience</h2>
-            </div>
-            <div class="experience-timeline">
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <span class="timeline-date">03/2019 - Present</span>
-                        <h3>Software Developer</h3>
-                        <h4>DataWizard, Roma, Italy</h4>
-                        <p>Technical Referent for SYNTHEMA (EU Project), Technical lead of Unicom (EU project), Software Developer for HS Monitor, SIMG - EHDEN and Pharmanow.</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <span class="timeline-date">05/2016 - 01/2019</span>
-                        <h3>Web Designer</h3>
-                        <h4>Multiple Companies, Roma, Italy</h4>
-                        <p>Website and landing page development in HTML, CSS and via CMS (Wordpress), Design of logos, brochures, DEM, SEO analysis.</p>
-                    </div>
-                </div>
-                <div class="timeline-item">
-                    <div class="timeline-content">
-                        <span class="timeline-date">05/2015 - 09/2015</span>
-                        <h3>Entertainer/DJ</h3>
-                        <h4>Dolmen Hotel, Bugibba, Malta</h4>
-                        <p>Entertainment, contact and international animation.</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Skills Section -->
-    <section id="skills" class="skills">
-        <div class="container">
-            <div class="section-title">
-                <h2 data-i18n="skills">Skills</h2>
-            </div>
-            <div class="skills-container">
-                <div class="skill-category">
-                    <h3 data-i18n="programming-languages">Programming Languages</h3>
-                    <div class="skill-list">
-                        <div class="skill-item">Python</div>
-                        <div class="skill-item">JavaScript</div>
-                        <div class="skill-item">Java</div>
-                        <div class="skill-item">Dart</div>
-                        <div class="skill-item">SQL</div>
-                        <div class="skill-item">Bash</div>
-                        <div class="skill-item">HTML</div>
-                        <div class="skill-item">CSS</div>
-                        <div class="skill-item">SCSS</div>
-                        <div class="skill-item">PHP</div>
-                        <div class="skill-item">jQuery</div>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3 data-i18n="databases">Databases</h3>
-                    <div class="skill-list">
-                        <div class="skill-item">PostgreSQL</div>
-                        <div class="skill-item">MariaDB</div>
-                        <div class="skill-item">MySQL</div>
-                        <div class="skill-item">MongoDB</div>
-                        <div class="skill-item">Elasticsearch</div>
-                        <div class="skill-item">Redis</div>
-                        <div class="skill-item">H2</div>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3 data-i18n="frameworks-technologies">Frameworks & Technologies</h3>
-                    <div class="skill-list">
-                        <div class="skill-item">Docker</div>
-                        <div class="skill-item">Git</div>
-                        <div class="skill-item">HAPI FHIR</div>
-                        <div class="skill-item">Flutter</div>
-                        <div class="skill-item">Express</div>
-                        <div class="skill-item">NodeJS</div>
-                        <div class="skill-item">Django</div>
-                        <div class="skill-item">Nginx</div>
-                        <div class="skill-item">WhiteRabbit</div>
-                        <div class="skill-item">Rabbit-in-a-Hat</div>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3 data-i18n="domain-knowledge">Domain Knowledge</h3>
-                    <div class="skill-list">
-                        <div class="skill-item">OMOP CDM</div>
-                        <div class="skill-item">ETL Process</div>
-                        <div class="skill-item">Healthcare Data</div>
-                        <div class="skill-item">Standard HL7 FHIR</div>
-                        <div class="skill-item">Data Management</div>
-                        <div class="skill-item">REST API</div>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3 data-i18n="design-tools">Design Tools</h3>
-                    <div class="skill-list">
-                        <div class="skill-item">Adobe Illustrator</div>
-                        <div class="skill-item">Adobe Photoshop</div>
-                        <div class="skill-item">Lightroom</div>
-                    </div>
-                </div>
-                <div class="skill-category">
-                    <h3 data-i18n="operating-systems">Operating Systems</h3>
-                    <div class="skill-list">
-                        <div class="skill-item">MacOS</div>
-                        <div class="skill-item">Linux (Ubuntu)</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Projects Section -->
-    <section id="projects" class="projects">
-        <div class="container">
-            <div class="section-title">
-                <h2 data-i18n="projects">Projects</h2>
-            </div>
-            <div class="projects-grid">
-                <!-- Project cards here -->
-                <!-- Example of a project card -->
-                <div class="project-card">
-                    <div class="project-image">
-                        <img src="img/projects/synthema.jpg" alt="SYNTHEMA Project">
-                    </div>
-                    <div class="project-content">
-                        <h3>SYNTHEMA (EU Project)</h3>
-                        <p>Mapping and transformation of clinical datasets according to standardized data models (OMOP CDM) and development of efficient ETL processes.</p>
-                        <div class="project-tags">
-                            <div class="project-tag">SQL</div>
-                            <div class="project-tag">Python</div>
-                            <div class="project-tag">PostgreSQL</div>
-                        </div>
-                    </div>
-                </div>
-                <!-- More project cards here -->
-            </div>
-        </div>
-    </section>
-
-    <!-- Education Section -->
-    <section id="education" class="education">
-        <div class="container">
-            <div class="section-title">
-                <h2 data-i18n="education">Education</h2>
-            </div>
-            <div class="education-timeline">
-                <div class="education-item">
-                    <div class="education-content">
-                        <span class="education-date">08/2021 - Present</span>
-                        <h3>Computer and Automation Engineering</h3>
-                        <h4>eCampus, Roma, Italy</h4>
-                    </div>
-                </div>
-                <div class="education-item">
-                    <div class="education-content">
-                        <span class="education-date">01/2019 - 03/2019</span>
-                        <h3>Java SE Course</h3>
-                        <h4>DSTech srl, Roma, Italy</h4>
-                    </div>
-                </div>
-                <div class="education-item">
-                    <div class="education-content">
-                        <span class="education-date">02/2016 - 07/2016</span>
-                        <h3>Graphic Technician Qualification</h3>
-                        <h4>Istituto Cappellari, Ferrara, Italy</h4>
-                    </div>
-                </div>
-                <div class="education-item">
-                    <div class="education-content">
-                        <span class="education-date">08/2006 - 07/2012</span>
-                        <h3>Scientific High School Diploma</h3>
-                        <h4>Liceo San Nilo, Rossano, Italy</h4>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <div class="container">
-            <div class="section-title">
-                <h2 data-i18n="contact-me">Contact Me</h2>
-            </div>
-            <div class="contact-content">
-                <div class="contact-info">
-                    <h3 data-i18n="get-in-touch">Get In Touch</h3>
-                    <div class="contact-details">
-                        <div class="contact-item">
-                            <i class="fas fa-map-marker-alt"></i>
-                            <div class="contact-item-content">
+                            <div class="info-icon">
+                                <i class="fas fa-map-marker-alt"></i>
+                            </div>
+                            <div class="info-content">
                                 <h4 data-i18n="location">Location</h4>
                                 <p>Roma, Italy</p>
                             </div>
                         </div>
-                        <div class="contact-item">
-                            <i class="fas fa-envelope"></i>
-                            <div class="contact-item-content">
-                                <h4 data-i18n="email-me">Email Me</h4>
-                                <p><a href="mailto:simodiaco@gmail.com">simodiaco@gmail.com</a></p>
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-envelope"></i>
+                            </div>
+                            <div class="info-content">
+                                <h4 data-i18n="email">Email</h4>
+                                <p>simodiaco@gmail.com</p>
                             </div>
                         </div>
-                        <div class="contact-item">
-                            <i class="fas fa-phone-alt"></i>
-                            <div class="contact-item-content">
-                                <h4 data-i18n="call-me">Call Me</h4>
-                                <p><a href="tel:+393420421111">(+39) 3420421111</a></p>
+                        <div class="info-item">
+                            <div class="info-icon">
+                                <i class="fas fa-phone-alt"></i>
+                            </div>
+                            <div class="info-content">
+                                <h4 data-i18n="phone">Phone</h4>
+                                <p>(+39) 3420421111</p>
                             </div>
                         </div>
                     </div>
-                    <h3 data-i18n="follow-me">Follow Me</h3>
-                    <div class="social-links">
-                        <a href="https://www.linkedin.com/in/simone-diaco/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#"><i class="fab fa-github"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                    </div>
-                </div>
-                <div class="contact-form">
-                    <h3 data-i18n="send-message">Send Me A Message</h3>
-                    <form id="contactForm">
-                        <div class="form-group">
-                            <label for="name" data-i18n="your-name">Your Name</label>
-                            <input type="text" id="name" name="name" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="email" data-i18n="your-email">Your Email</label>
-                            <input type="email" id="email" name="email" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="subject" data-i18n="subject">Subject</label>
-                            <input type="text" id="subject" name="subject" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="message" data-i18n="message">Message</label>
-                            <textarea id="message" name="message" class="form-control" required></textarea>
-                        </div>
-                        <button type="submit" class="form-btn" data-i18n="send-message">Send Message</button>
-                    </form>
-                    <div id="formStatus" class="mt-3"></div>
                 </div>
             </div>
         </div>
     </section>
-
+    
+    <!-- Skills Section -->
+    <section id="skills" class="skills">
+        <div class="container">
+            <div class="skills-header animate-element">
+                <span class="section-subtitle" data-i18n="expertise">Expertise</span>
+                <h2 class="section-title" data-i18n="my-skills">My Skills</h2>
+                <p class="section-description" data-i18n="skills-description">Discover the technologies, languages, and tools I work with to create impactful digital solutions.</p>
+            </div>
+            <div class="skills-grid">
+                <div class="skill-card animate-element">
+                    <div class="skill-icon">
+                        <i class="fas fa-code"></i>
+                    </div>
+                    <h3 class="skill-title" data-i18n="programming">Programming</h3>
+                    <p data-i18n="programming-description">Proficient in multiple programming languages with a focus on clean, efficient, and maintainable code.</p>
+                    <div class="skill-list">
+                        <span class="skill-tag">Python</span>
+                        <span class="skill-tag">JavaScript</span>
+                        <span class="skill-tag">Java</span>
+                        <span class="skill-tag">Dart</span>
+                        <span class="skill-tag">SQL</span>
+                        <span class="skill-tag">Bash</span>
+                    </div>
+                </div>
+                <div class="skill-card animate-element">
+                    <div class="skill-icon">
+                        <i class="fas fa-database"></i>
+                    </div>
+                    <h3 class="skill-title" data-i18n="databases">Databases</h3>
+                    <p data-i18n="databases-description">Experience with various database systems, specializing in efficient data modeling and querying.</p>
+                    <div class="skill-list">
+                        <span class="skill-tag">PostgreSQL</span>
+                        <span class="skill-tag">MariaDB</span>
+                        <span class="skill-tag">MongoDB</span>
+                        <span class="skill-tag">Elasticsearch</span>
+                        <span class="skill-tag">Redis</span>
+                    </div>
+                </div>
+                <div class="skill-card animate-element">
+                    <div class="skill-icon">
+                        <i class="fas fa-laptop-code"></i>
+                    </div>
+                    <h3 class="skill-title" data-i18n="frameworks">Frameworks</h3>
+                    <p data-i18n="frameworks-description">Well-versed in leading frameworks for building robust and scalable applications.</p>
+                    <div class="skill-list">
+                        <span class="skill-tag">Django</span>
+                        <span class="skill-tag">Express</span>
+                        <span class="skill-tag">Flutter</span>
+                        <span class="skill-tag">HAPI FHIR</span>
+                        <span class="skill-tag">NodeJS</span>
+                    </div>
+                </div>
+                <div class="skill-card animate-element">
+                    <div class="skill-icon">
+                        <i class="fas fa-cogs"></i>
+                    </div>
+                    <h3 class="skill-title" data-i18n="devops">DevOps</h3>
+                    <p data-i18n="devops-description">Knowledge of development operations tools for efficient deployment and maintenance.</p>
+                    <div class="skill-list">
+                        <span class="skill-tag">Docker</span>
+                        <span class="skill-tag">Git</span>
+                        <span class="skill-tag">CI/CD</span>
+                        <span class="skill-tag">Nginx</span>
+                    </div>
+                </div>
+                <div class="skill-card animate-element">
+                    <div class="skill-icon">
+                        <i class="fas fa-heartbeat"></i>
+                    </div>
+                    <h3 class="skill-title" data-i18n="healthcare">Healthcare IT</h3>
+                    <p data-i18n="healthcare-description">Specialized expertise in healthcare data management and standards.</p>
+                    <div class="skill-list">
+                        <span class="skill-tag">OMOP CDM</span>
+                        <span class="skill-tag">ETL Process</span>
+                        <span class="skill-tag">HL7 FHIR</span>
+                        <span class="skill-tag">Healthcare Data</span>
+                    </div>
+                </div>
+                <div class="skill-card animate-element">
+                    <div class="skill-icon">
+                        <i class="fas fa-palette"></i>
+                    </div>
+                    <h3 class="skill-title" data-i18n="design">Design</h3>
+                    <p data-i18n="design-description">Proficiency in design tools for creating visually appealing interfaces and graphics.</p>
+                    <div class="skill-list">
+                        <span class="skill-tag">Adobe Illustrator</span>
+                        <span class="skill-tag">Adobe Photoshop</span>
+                        <span class="skill-tag">Lightroom</span>
+                        <span class="skill-tag">UI/UX</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Experience Section -->
+    <section id="experience" class="experience">
+        <div class="container">
+            <div class="experience-header animate-element">
+                <span class="section-subtitle" data-i18n="journey">Journey</span>
+                <h2 class="section-title" data-i18n="my-experience">My Experience</h2>
+                <p class="section-description" data-i18n="experience-description">A timeline of my professional journey and key career milestones.</p>
+            </div>
+            <div class="experience-timeline">
+                <div class="timeline-line"></div>
+                <div class="timeline-item animate-element">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2019 - Present</div>
+                        <h3 class="timeline-title">Software Developer</h3>
+                        <h4 class="timeline-subtitle">DataWizard, Roma</h4>
+                        <p class="timeline-description">Working on various EU projects focused on healthcare data, developing innovative solutions for standardized data models, medicine identification, and patient monitoring. Projects include SYNTHEMA, Unicom, HS Monitor, and Pharmanow.</p>
+                    </div>
+                </div>
+                <div class="timeline-item animate-element">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2016 - 2019</div>
+                        <h3 class="timeline-title">Web Designer</h3>
+                        <h4 class="timeline-subtitle">Multiple Companies, Roma</h4>
+                        <p class="timeline-description">Designed and developed websites and landing pages using HTML, CSS, and WordPress. Created logos, brochures, and marketing materials. Conducted SEO analysis to improve online visibility for various clients.</p>
+                    </div>
+                </div>
+                <div class="timeline-item animate-element">
+                    <div class="timeline-content">
+                        <div class="timeline-date">2015</div>
+                        <h3 class="timeline-title">Entertainer/DJ</h3>
+                        <h4 class="timeline-subtitle">Dolmen Hotel, Malta</h4>
+                        <p class="timeline-description">Provided entertainment services and international animation for hotel guests, creating engaging experiences and fostering a positive atmosphere during their stay.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="contact-header animate-element">
+                <span class="section-subtitle" data-i18n="connect">Connect</span>
+                <h2 class="section-title" data-i18n="get-in-touch">Get In Touch</h2>
+                <p class="section-description" data-i18n="contact-description">Have a project in mind or want to collaborate? Reach out to me and let's create something amazing together.</p>
+            </div>
+            <div class="contact-content">
+                <div class="contact-info animate-element">
+                    <h3 class="contact-title" data-i18n="lets-talk">Let's Talk</h3>
+                    <p class="contact-text" data-i18n="contact-text">Feel free to reach out if you're looking for a developer, have a question, or just want to connect. I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision.</p>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-map-marker-alt"></i>
+                        </div>
+                        <div class="contact-item-content">
+                            <h4 data-i18n="location">Location</h4>
+                            <p>Roma, Italy</p>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-envelope"></i>
+                        </div>
+                        <div class="contact-item-content">
+                            <h4 data-i18n="email-me">Email Me</h4>
+                            <a href="mailto:simodiaco@gmail.com">simodiaco@gmail.com</a>
+                        </div>
+                    </div>
+                    <div class="contact-item">
+                        <div class="contact-icon">
+                            <i class="fas fa-phone-alt"></i>
+                        </div>
+                        <div class="contact-item-content">
+                            <h4 data-i18n="call-me">Call Me</h4>
+                            <a href="tel:+393420421111">(+39) 3420421111</a>
+                        </div>
+                    </div>
+                    <div class="social-links">
+                        <a href="https://www.linkedin.com/in/simone-diaco/" target="_blank" class="social-link">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-instagram"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="contact-form animate-element">
+                    <h3 class="form-title" data-i18n="send-message">Send Me A Message</h3>
+                    <form id="contactForm">
+                        <div class="form-group">
+                            <label for="name" class="form-label" data-i18n="your-name">Your Name</label>
+                            <input type="text" id="name" name="name" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email" class="form-label" data-i18n="your-email">Your Email</label>
+                            <input type="email" id="email" name="email" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="subject" class="form-label" data-i18n="subject">Subject</label>
+                            <input type="text" id="subject" name="subject" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="message" class="form-label" data-i18n="message">Message</label>
+                            <textarea id="message" name="message" class="form-control" required></textarea>
+                        </div>
+                        <button type="submit" class="form-button" data-i18n="send">Send Message</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+    
     <!-- Footer -->
     <footer class="footer">
         <div class="container">
             <div class="footer-content">
-                <div class="footer-about">
-                    <h3>Simone Diaco</h3>
-                    <p data-i18n="footer-about">Software Developer specializing in healthcare data solutions and full-stack development.</p>
+                <div>
+                    <a href="#" class="footer-logo">Simone<span>Diaco</span></a>
+                    <p class="footer-text" data-i18n="footer-text">Software Developer specializing in healthcare data solutions and full-stack development, creating innovative and impactful digital tools.</p>
                     <div class="social-links">
-                        <a href="https://www.linkedin.com/in/simone-diaco/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
-                        <a href="#"><i class="fab fa-github"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="https://www.linkedin.com/in/simone-diaco/" target="_blank" class="social-link">
+                            <i class="fab fa-linkedin-in"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-github"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-twitter"></i>
+                        </a>
+                        <a href="#" class="social-link">
+                            <i class="fab fa-instagram"></i>
+                        </a>
                     </div>
                 </div>
-                <div class="footer-links">
-                    <h3 data-i18n="quick-links">Quick Links</h3>
-                    <ul>
+                <div>
+                    <h3 class="footer-links-title" data-i18n="quick-links">Quick Links</h3>
+                    <ul class="footer-links">
                         <li><a href="#home" data-i18n="home">Home</a></li>
                         <li><a href="#about" data-i18n="about">About</a></li>
-                        <li><a href="#experience" data-i18n="experience">Experience</a></li>
                         <li><a href="#skills" data-i18n="skills">Skills</a></li>
-                        <li><a href="#projects" data-i18n="projects">Projects</a></li>
+                        <li><a href="#experience" data-i18n="experience">Experience</a></li>
                         <li><a href="#contact" data-i18n="contact">Contact</a></li>
                     </ul>
                 </div>
-                <div class="footer-links">
-                    <h3 data-i18n="skills">Skills</h3>
-                    <ul>
-                        <li>Python, JavaScript, Java</li>
-                        <li>SQL, PostgreSQL, MongoDB</li>
-                        <li>Docker, Git, Nginx</li>
+                <div>
+                    <h3 class="footer-links-title" data-i18n="contact-info">Contact Info</h3>
+                    <ul class="footer-links">
+                        <li><a href="mailto:simodiaco@gmail.com">simodiaco@gmail.com</a></li>
+                        <li><a href="tel:+393420421111">(+39) 3420421111</a></li>
+                        <li><a href="#">Roma, Italy</a></li>
                     </ul>
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 Simone Diaco. All Rights Reserved.</p>
-                <div class="languages">
-                    <button class="active" data-lang="en">English</button>
+                <p class="footer-copyright">&copy; 2025 Simone Diaco. All Rights Reserved.</p>
+                <div class="footer-languages">
+                    <a href="#" class="footer-language active" data-lang="en">English</a>
                     <span>|</span>
-                    <button data-lang="it">Italiano</button>
+                    <a href="#" class="footer-language" data-lang="it">Italiano</a>
                 </div>
             </div>
         </div>
     </footer>
+    
+    <!-- Scripts -->
+    <script>
+        // Translations
+        const translations = {
+            en: {
+                'home': 'Home',
+                'about': 'About',
+                'skills': 'Skills',
+                'experience': 'Experience',
+                'contact': 'Contact',
+                'hero-title-1': 'Hi, I\'m',
+                'hero-subtitle': 'Creative software developer specializing in healthcare data solutions and innovative digital tools, with a passion for creating impactful technology.',
+                'contact-me': 'Contact Me',
+                'learn-more': 'Learn More',
+                'scroll-down': 'Scroll Down',
+                'discover': 'Discover',
+                'about-me': 'About Me',
+                'about-description-short': 'Get to know me better and discover what drives my passion for crafting innovative digital solutions.',
+                'software-developer': 'Software Developer',
+                'about-text-1': 'I\'m a passionate software developer with over 6 years of experience, specializing in healthcare data solutions and full-stack development. I have extensive experience with ETL processes, standardized data models (OMOP CDM), and building innovative digital tools for healthcare professionals and patients.',
+                'about-text-2': 'My expertise spans across various programming languages and frameworks, allowing me to adapt to different project requirements and deliver efficient, scalable solutions. I\'m particularly interested in creating software that makes a positive impact on healthcare systems and patient outcomes.',
+                'name': 'Name',
+                'location': 'Location',
+                'email': 'Email',
+                'phone': 'Phone',
+                'expertise': 'Expertise',
+                'my-skills': 'My Skills',
+                'skills-description': 'Discover the technologies, languages, and tools I work with to create impactful digital solutions.',
+                'programming': 'Programming',
+                'programming-description': 'Proficient in multiple programming languages with a focus on clean, efficient, and maintainable code.',
+                'databases': 'Databases',
+                'databases-description': 'Experience with various database systems, specializing in efficient data modeling and querying.',
+                'frameworks': 'Frameworks',
+                'frameworks-description': 'Well-versed in leading frameworks for building robust and scalable applications.',
+                'devops': 'DevOps',
+                'devops-description': 'Knowledge of development operations tools for efficient deployment and maintenance.',
+                'healthcare': 'Healthcare IT',
+                'healthcare-description': 'Specialized expertise in healthcare data management and standards.',
+                'design': 'Design',
+                'design-description': 'Proficiency in design tools for creating visually appealing interfaces and graphics.',
+                'journey': 'Journey',
+                'my-experience': 'My Experience',
+                'experience-description': 'A timeline of my professional journey and key career milestones.',
+                'connect': 'Connect',
+                'get-in-touch': 'Get In Touch',
+                'contact-description': 'Have a project in mind or want to collaborate? Reach out to me and let\'s create something amazing together.',
+                'lets-talk': 'Let\'s Talk',
+                'contact-text': 'Feel free to reach out if you\'re looking for a developer, have a question, or just want to connect. I\'m always open to discussing new projects, creative ideas, or opportunities to be part of your vision.',
+                'email-me': 'Email Me',
+                'call-me': 'Call Me',
+                'send-message': 'Send Me A Message',
+                'your-name': 'Your Name',
+                'your-email': 'Your Email',
+                'subject': 'Subject',
+                'message': 'Message',
+                'send': 'Send Message',
+                'quick-links': 'Quick Links',
+                'contact-info': 'Contact Info',
+                'footer-text': 'Software Developer specializing in healthcare data solutions and full-stack development, creating innovative and impactful digital tools.'
+            },
+            it: {
+                'home': 'Home',
+                'about': 'Chi Sono',
+                'skills': 'Competenze',
+                'experience': 'Esperienza',
+                'contact': 'Contatti',
+                'hero-title-1': 'Ciao, sono',
+                'hero-subtitle': 'Sviluppatore software creativo specializzato in soluzioni di dati sanitari e strumenti digitali innovativi, con la passione per la creazione di tecnologia impattante.',
+                'contact-me': 'Contattami',
+                'learn-more': 'Scopri di più',
+                'scroll-down': 'Scorri Giù',
+                'discover': 'Scopri',
+                'about-me': 'Chi Sono',
+                'about-description-short': 'Conoscimi meglio e scopri cosa guida la mia passione per la creazione di soluzioni digitali innovative.',
+                'software-developer': 'Sviluppatore Software',
+                'about-text-1': 'Sono uno sviluppatore software appassionato con oltre 6 anni di esperienza, specializzato in soluzioni di dati sanitari e sviluppo full-stack. Ho una vasta esperienza con processi ETL, modelli di dati standardizzati (OMOP CDM) e nella creazione di strumenti digitali innovativi per professionisti sanitari e pazienti.',
+                'about-text-2': 'La mia competenza si estende a vari linguaggi di programmazione e framework, permettendomi di adattarmi a diverse esigenze di progetto e fornire soluzioni efficienti e scalabili. Sono particolarmente interessato a creare software che abbia un impatto positivo sui sistemi sanitari e sui risultati dei pazienti.',
+                'name': 'Nome',
+                'location': 'Località',
+                'email': 'Email',
+                'phone': 'Telefono',
+                'expertise': 'Competenze',
+                'my-skills': 'Le Mie Abilità',
+                'skills-description': 'Scopri le tecnologie, i linguaggi e gli strumenti con cui lavoro per creare soluzioni digitali di impatto.',
+                'programming': 'Programmazione',
+                'programming-description': 'Esperto in molteplici linguaggi di programmazione con focus su codice pulito, efficiente e manutenibile.',
+                'databases': 'Database',
+                'databases-description': 'Esperienza con vari sistemi di database, specializzazione in modellazione dati efficiente e query.',
+                'frameworks': 'Frameworks',
+                'frameworks-description': 'Esperto nei principali framework per costruire applicazioni robuste e scalabili.',
+                'devops': 'DevOps',
+                'devops-description': 'Conoscenza degli strumenti di operations per deployment e manutenzione efficienti.',
+                'healthcare': 'IT Sanitario',
+                'healthcare-description': 'Competenza specializzata nella gestione dei dati sanitari e negli standard.',
+                'design': 'Design',
+                'design-description': 'Competenza negli strumenti di design per creare interfacce e grafiche visivamente accattivanti.',
+                'journey': 'Percorso',
+                'my-experience': 'La Mia Esperienza',
+                'experience-description': 'Una cronologia del mio percorso professionale e delle principali tappe della carriera.',
+                'connect': 'Connettiti',
+                'get-in-touch': 'Mettiamoci in Contatto',
+                'contact-description': 'Hai un progetto in mente o vuoi collaborare? Contattami e creiamo insieme qualcosa di straordinario.',
+                'lets-talk': 'Parliamo',
+                'contact-text': 'Sentiti libero di contattarmi se stai cercando uno sviluppatore, hai una domanda o semplicemente vuoi connetterti. Sono sempre aperto a discutere nuovi progetti, idee creative o opportunità per far parte della tua visione.',
+                'email-me': 'Email',
+                'call-me': 'Chiamami',
+                'send-message': 'Inviami un Messaggio',
+                'your-name': 'Il tuo Nome',
+                'your-email': 'La tua Email',
+                'subject': 'Oggetto',
+                'message': 'Messaggio',
+                'send': 'Invia Messaggio',
+                'quick-links': 'Link Rapidi',
+                'contact-info': 'Informazioni di Contatto',
+                'footer-text': 'Sviluppatore Software specializzato in soluzioni dati per la sanità e sviluppo full-stack, creando strumenti digitali innovativi e impattanti.'
+            }
+        };
 
-    <script src="js/translations.js"></script>
-    <script src="js/main.js"></script>
+        // DOM Loaded Event
+        document.addEventListener('DOMContentLoaded', () => {
+            // Remove loader after page load
+            setTimeout(() => {
+                document.querySelector('.loader-wrapper').style.opacity = '0';
+                setTimeout(() => {
+                    document.querySelector('.loader-wrapper').style.display = 'none';
+                }, 500);
+            }, 1500);
+            
+            // Mobile Menu Toggle
+            const menuToggle = document.querySelector('.menu-toggle');
+            const navLinks = document.querySelector('.nav-links');
+            
+            menuToggle.addEventListener('click', () => {
+                navLinks.classList.toggle('active');
+                menuToggle.innerHTML = navLinks.classList.contains('active') ? 
+                    '<i class="fas fa-times"></i>' : '<i class="fas fa-bars"></i>';
+            });
+            
+            // Close menu when clicking a nav link
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', () => {
+                    navLinks.classList.remove('active');
+                    menuToggle.innerHTML = '<i class="fas fa-bars"></i>';
+                });
+            });
+            
+            // Smooth scrolling
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (!targetElement) return;
+                    
+                    const navHeight = document.querySelector('.navbar').offsetHeight;
+                    
+                    window.scrollTo({
+                        top: targetElement.offsetTop - navHeight - 20,
+                        behavior: 'smooth'
+                    });
+                    
+                    // Update active nav links
+                    document.querySelectorAll('.nav-links a').forEach(link => {
+                        link.classList.remove('active');
+                    });
+                    this.classList.add('active');
+                });
+            });
+            
+            // Scroll event for navbar styling and active link
+            window.addEventListener('scroll', () => {
+                const navbar = document.querySelector('.navbar');
+                
+                if (window.scrollY > 50) {
+                    navbar.style.backdropFilter = 'blur(20px)';
+                    navbar.style.webkitBackdropFilter = 'blur(20px)';
+                    navbar.style.backgroundColor = 'rgba(10, 10, 10, 0.8)';
+                } else {
+                    navbar.style.backdropFilter = 'blur(10px)';
+                    navbar.style.webkitBackdropFilter = 'blur(10px)';
+                    navbar.style.backgroundColor = 'rgba(10, 10, 10, 0.2)';
+                }
+                
+                // Update active nav link based on scroll position
+                const scrollPosition = window.scrollY;
+                
+                document.querySelectorAll('section').forEach(section => {
+                    const sectionTop = section.offsetTop - 100;
+                    const sectionHeight = section.offsetHeight;
+                    const sectionId = section.getAttribute('id');
+                    
+                    if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                        document.querySelectorAll('.nav-links a').forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === `#${sectionId}`) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            });
+            
+            // Language switcher
+            const langButtons = document.querySelectorAll('[data-lang]');
+            langButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    if (e.preventDefault) e.preventDefault();
+                    const lang = this.getAttribute('data-lang');
+                    setLanguage(lang);
+                    
+                    // Update active button
+                    document.querySelectorAll('[data-lang]').forEach(btn => {
+                        btn.classList.remove('active');
+                    });
+                    document.querySelectorAll(`[data-lang="${lang}"]`).forEach(btn => {
+                        btn.classList.add('active');
+                    });
+                    
+                    // Save language preference
+                    localStorage.setItem('preferredLanguage', lang);
+                });
+            });
+            
+            // Set initial language
+            const savedLang = localStorage.getItem('preferredLanguage') || 'en';
+            setLanguage(savedLang);
+            
+            // Set active language button
+            document.querySelectorAll(`[data-lang="${savedLang}"]`).forEach(btn => {
+                btn.classList.add('active');
+            });
+            
+            // Contact form
+            const contactForm = document.getElementById('contactForm');
+            if (contactForm) {
+                contactForm.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    
+                    // Get form data
+                    const formData = {
+                        name: document.getElementById('name').value,
+                        email: document.getElementById('email').value,
+                        subject: document.getElementById('subject').value,
+                        message: document.getElementById('message').value
+                    };
+                    
+                    // Here you would typically send the data to your server
+                    // For this example, we'll just show a success message
+                    
+                    // Show success message
+                    const formButton = contactForm.querySelector('.form-button');
+                    const originalText = formButton.textContent;
+                    
+                    formButton.textContent = '✓ Message Sent!';
+                    formButton.style.background = 'linear-gradient(to right, #10b981, #3b82f6)';
+                    
+                    // Reset the form
+                    contactForm.reset();
+                    
+                    // Reset button text after a delay
+                    setTimeout(() => {
+                        formButton.textContent = originalText;
+                        formButton.style.background = '';
+                    }, 3000);
+                });
+            }
+            
+            // Add intersection observer for fade-in animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate-in');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+            
+            // Target elements to animate
+            const animElements = document.querySelectorAll('.animate-element');
+            
+            animElements.forEach(el => {
+                observer.observe(el);
+            });
+        });
+        
+        // Set language function
+        function setLanguage(lang) {
+            const elements = document.querySelectorAll('[data-i18n]');
+            elements.forEach(element => {
+                const key = element.getAttribute('data-i18n');
+                if (translations[lang] && translations[lang][key]) {
+                    if (key === 'hero-title-1') {
+                        element.innerHTML = translations[lang][key];
+                    } else if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA') {
+                        element.placeholder = translations[lang][key];
+                    } else {
+                        element.textContent = translations[lang][key];
+                    }
+                }
+            });
+        }
+    </script>
 </body>
 </html>
