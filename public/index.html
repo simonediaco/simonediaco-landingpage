@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simone Diaco | Creative Developer</title>
+    <link rel="icon" href="/assets/favicon.svg" type="image/x-icon">
+    <link rel="shortcut icon" href="/assets/favicon.svg" type="image/x-icon">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* === VARIABLES === */
@@ -229,6 +231,8 @@
             justify-content: center;
             z-index: 1000;
             transition: all 0.3s ease;
+            border-radius: 100px;
+
         }
 
         .nav-container {
@@ -285,7 +289,6 @@
 
         .nav-links li a.active {
             color: var(--text-primary);
-            font-weight: 600;
         }
 
         .nav-links li a.active::before {
@@ -465,7 +468,7 @@
 
         .hero-img-container {
             position: relative;
-            width: 400px;
+            width: 450px;
             height: 530px;
             margin-left: auto;
             border-radius: 30px;
@@ -646,8 +649,8 @@
             border-radius: 15px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-            right: -50px;
-            bottom: -30px;
+            right: -10px;
+            bottom:0;
             z-index: 2;
         }
 
@@ -1367,9 +1370,10 @@
             
             .hero-socials {
                 position: static;
-                flex-direction: row;
                 justify-content: center;
                 margin-top: 40px;
+                flex-direction: column;
+                margin: 0 25px;
             }
             
             .about-image {
@@ -1437,6 +1441,13 @@
             .footer-content {
                 flex-direction: column;
                 gap: 40px;
+            }
+            
+            .about-img-secondary{
+                bottom: -30px;
+            }
+            .about-img-frame{
+                left: 0;
             }
         }
 
@@ -1595,15 +1606,15 @@
                 </div>
                 <div class="hero-image animate-element">
                     <div class="hero-img-container">
-                        <img src="/api/placeholder/400/550" alt="Simone Diaco">
+                        <img src="/assets/img-01.jpeg" alt="Simone Diaco">
                         <div class="hero-img-overlay"></div>
                     </div>
                     <div class="hero-img-frame"></div>
                     <div class="hero-socials">
                         <a href="https://www.linkedin.com/in/simone-diaco/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
                         <a href="#"><i class="fab fa-github"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <!-- <a href="#"><i class="fab fa-twitter"></i></a> -->
+                        <a href="https://www.instagram.com/simone_diaco/"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
             </div>
@@ -1625,10 +1636,10 @@
             <div class="about-content">
                 <div class="about-image animate-element">
                     <div class="about-img-main">
-                        <img src="/api/placeholder/350/450" alt="Simone Diaco">
+                        <img src="/assets/img-02.jpeg" alt="Simone Diaco">
                     </div>
                     <div class="about-img-secondary">
-                        <img src="/api/placeholder/200/250" alt="Simone Diaco">
+                        <img src="/assets/img-03.jpeg" alt="Simone Diaco">
                     </div>
                     <div class="about-img-frame"></div>
                 </div>
@@ -1858,10 +1869,10 @@
                         <a href="#" class="social-link">
                             <i class="fab fa-github"></i>
                         </a>
-                        <a href="#" class="social-link">
+                        <!-- <a href="#" class="social-link">
                             <i class="fab fa-twitter"></i>
-                        </a>
-                        <a href="#" class="social-link">
+                        </a> -->
+                        <a href="https://www.instagram.com/simone_diaco/" class="social-link">
                             <i class="fab fa-instagram"></i>
                         </a>
                     </div>
@@ -1897,7 +1908,9 @@
         <div class="container">
             <div class="footer-content">
                 <div>
-                    <a href="#" class="footer-logo">Simone<span>Diaco</span></a>
+                    <a href="#home" class="footer-logo" style="text-decoration: none;">
+                        <span class="gradient-text">Simone Diaco</span>
+                    </a>
                     <p class="footer-text" data-i18n="footer-text">Software Developer specializing in healthcare data solutions and full-stack development, creating innovative and impactful digital tools.</p>
                     <div class="social-links">
                         <a href="https://www.linkedin.com/in/simone-diaco/" target="_blank" class="social-link">
@@ -1906,10 +1919,10 @@
                         <a href="#" class="social-link">
                             <i class="fab fa-github"></i>
                         </a>
-                        <a href="#" class="social-link">
+                        <!-- <a href="#" class="social-link">
                             <i class="fab fa-twitter"></i>
-                        </a>
-                        <a href="#" class="social-link">
+                        </a> -->
+                        <a href="https://www.instagram.com/simone_diaco/" class="social-link">
                             <i class="fab fa-instagram"></i>
                         </a>
                     </div>
@@ -2193,24 +2206,84 @@
                         message: document.getElementById('message').value
                     };
                     
-                    // Here you would typically send the data to your server
-                    // For this example, we'll just show a success message
+                    console.log('Submitting form with data:', formData);
                     
-                    // Show success message
+                    // Show sending state
                     const formButton = contactForm.querySelector('.form-button');
                     const originalText = formButton.textContent;
+                    formButton.disabled = true;
+                    formButton.textContent = 'Sending...';
                     
-                    formButton.textContent = '✓ Message Sent!';
-                    formButton.style.background = 'linear-gradient(to right, #10b981, #3b82f6)';
+                    // Create status message area if it doesn't exist
+                    let statusMessage = document.getElementById('formStatus');
+                    if (!statusMessage) {
+                        statusMessage = document.createElement('div');
+                        statusMessage.id = 'formStatus';
+                        statusMessage.style.marginTop = '20px';
+                        statusMessage.style.padding = '15px';
+                        statusMessage.style.borderRadius = '12px';
+                        statusMessage.style.textAlign = 'center';
+                        statusMessage.style.opacity = '0';
+                        statusMessage.style.transition = 'opacity 0.3s ease';
+                        contactForm.appendChild(statusMessage);
+                    }
                     
-                    // Reset the form
-                    contactForm.reset();
-                    
-                    // Reset button text after a delay
-                    setTimeout(() => {
+                    // Send data to server
+                    fetch('/api/contact', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(formData)
+                    })
+                    .then(response => {
+                        console.log('Server response status:', response.status);
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Server response data:', data);
+                        
+                        if (data.success) {
+                            // Show success message
+                            statusMessage.style.backgroundColor = 'rgba(45, 255, 213, 0.1)';
+                            statusMessage.style.color = 'var(--accent-2)';
+                            statusMessage.textContent = data.message;
+                            statusMessage.style.opacity = '1';
+                            
+                            // Reset form
+                            contactForm.reset();
+                        } else {
+                            // Show error message
+                            statusMessage.style.backgroundColor = 'rgba(255, 45, 117, 0.1)';
+                            statusMessage.style.color = 'var(--accent-1)';
+                            statusMessage.textContent = data.message;
+                            statusMessage.style.opacity = '1';
+                        }
+                        
+                        // Reset button
+                        formButton.disabled = false;
                         formButton.textContent = originalText;
-                        formButton.style.background = '';
-                    }, 3000);
+                        
+                        // Clear status message after 5 seconds
+                        setTimeout(() => {
+                            statusMessage.style.opacity = '0';
+                            setTimeout(() => {
+                                statusMessage.textContent = '';
+                                statusMessage.style.backgroundColor = 'transparent';
+                                statusMessage.style.opacity = '1';
+                            }, 300);
+                        }, 5000);
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        statusMessage.style.backgroundColor = 'rgba(255, 45, 117, 0.1)';
+                        statusMessage.style.color = 'var(--accent-1)';
+                        statusMessage.textContent = 'There was an error sending your message. Please try again.';
+                        statusMessage.style.opacity = '1';
+                        
+                        formButton.disabled = false;
+                        formButton.textContent = originalText;
+                    });
                 });
             }
             
