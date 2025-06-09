@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simone Diaco - Sviluppatore Fluido</title>
+    <!-- Chosen Palette: macOS Dark Mode with Warm Fluid Background -->
+    <!-- Application Structure Plan: Hero section with a smaller macOS terminal over a new warm-toned fluid background. The content sections now start with a light background and alternate, as requested. -->
+    <!-- Visualization & Content Choices: Hero Background -> Shader colors updated to a warmer palette (reds, oranges). Terminal -> Size reduced, and CSS for the input/cursor has been fixed for correct alignment and focus. Content Sections -> Background colors inverted (light, dark, light). -->
+    <!-- CONFIRMATION: NO SVG graphics used for icons. NO Mermaid JS used. -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@500&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #161618;
+            --bg-terminal: rgba(30, 30, 30, 0.85);
+            --header-terminal: #343434;
+            --bg-light: #F5F5F7;
+            --text-accent: #FF8A00; /* Warm Orange Accent */
+            --text-light: #EAEAEA;
+            --text-dark: #1D1D1F;
+            --border-dark: #3A3A3C;
+            --border-light: #D2D2D7;
+        }
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-light);
+            font-family: 'Inter', sans-serif;
+        }
+        .font-mono { font-family: 'Fira Code', monospace; }
+        .accent-text { color: var(--text-accent); }
+        
+        /* Hero and Fluid Background */
+        #hero-section {
+            position: relative;
+            min-height: 90vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        #fluid-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 1;
+        }
+
+        /* Terminal Styles */
+        #terminal-container {
+            min-height: 90vh;
+            width: 100%;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            z-index: 2;
+        }
+        #terminal {
+            width: 100%;
+            height: 34rem; /* Smaller height */
+            max-width: 56rem; /* Smaller width */
+            max-height: 80vh; 
+            background-color: var(--bg-terminal);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid var(--border-dark);
+            border-radius: 0.75rem;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .terminal-header {
+            display: flex;
+            align-items: center;
+            padding: 0 0.75rem;
+            height: 2.5rem;
+            background-color: var(--header-terminal);
+            border-bottom: 1px solid var(--border-dark);
+            flex-shrink: 0;
+        }
+        .dots-container { display: flex; align-items: center; }
+        .dot { height: 12px; width: 12px; border-radius: 50%; margin-right: 8px; }
+        .dot-red { background-color: #ff5f56; }
+        .dot-yellow { background-color: #ffbd2e; }
+        .dot-green { background-color: #27c93f; }
+        
+        #terminal-content {
+            padding: 1rem 1.5rem;
+            overflow-y: auto;
+            flex-grow: 1;
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+        .terminal-line { white-space: pre-wrap; color: var(--text-light); }
+        .prompt-path { color: #A8A8A2; }
+        #input-line { display: flex; align-items: baseline; } /* FIX: Cursor alignment */
+        #terminal-input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: var(--text-light);
+            flex-grow: 1;
+        }
+        .blinking-cursor {
+            background-color: var(--text-light);
+            width: 9px;
+            height: 1.2rem;
+            display: inline-block;
+            animation: blink 1s step-end infinite;
+        }
+        @keyframes blink { from, to { opacity: 0 } 50% { opacity: 1; } }
+
+        /* Section Styles */
+        main { position: relative; z-index: 2; }
+        .section-dark { background-color: var(--bg-dark); color: var(--text-light); }
+        .section-light { background-color: var(--bg-light); color: var(--text-dark); }
+        
+        .section-hidden { opacity: 0; transform: translateY(30px); transition: opacity 0.8s ease-out, transform 0.8s ease-out; }
+        .section-visible { opacity: 1; transform: translateY(0); }
+
+        .card-light { background-color: white; border: 1px solid var(--border-light); border-radius: 0.75rem; padding: 1.5rem; transition: transform 0.3s ease; }
+        .card-light:hover { transform: translateY(-5px); }
+        
+        .card-dark { background-color: #262628; border: 1px solid var(--border-dark); border-radius: 0.75rem; padding: 1.5rem; transition: transform 0.3s ease; }
+        .card-dark:hover { transform: translateY(-5px); }
+        
+        .timeline-dot-dark { position: absolute; width: 1.25rem; height: 1.25rem; background-color: var(--text-accent); border-radius: 9999px; left: -2.8rem; top: 0.25rem; border: 4px solid var(--bg-dark); }
+        
+        .form-input-light { background-color: white; border: 1px solid var(--border-light); color: var(--text-dark); border-radius: 0.5rem; padding: 0.75rem 1rem; width: 100%; transition: border-color 0.3s; }
+        .form-input-light:focus { outline: none; border-color: var(--text-accent); }
+    </style>
+</head>
+<body>
+    <header id="hero-section">
+        <canvas id="fluid-canvas"></canvas>
+        <div id="terminal-container">
+            <div id="terminal" class="font-mono">
+                 <div class="terminal-header">
+                    <div class="dots-container">
+                        <div class="dot dot-red"></div>
+                        <div class="dot dot-yellow"></div>
+                        <div class="dot dot-green"></div>
+                    </div>
+                </div>
+                <div id="terminal-content">
+                    <div id="terminal-output"></div>
+                    <div id="input-line">
+                        <span class="prompt-path">~</span><span style="color: #EAEAEA;">$ &nbsp;</span>
+                        <input type="text" id="terminal-input" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+                        <span class="blinking-cursor"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <section id="skills" class="section-light section-hidden px-4 py-20 sm:py-24">
+            <div class="container mx-auto">
+                <h2 class="text-4xl font-bold mb-12 text-center">Toolkit</h2>
+                <div id="skills-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+            </div>
+        </section>
+        
+        <section id="experience" class="section-dark section-hidden px-4 py-20 sm:py-24">
+            <div class="container mx-auto">
+                <h2 class="text-4xl font-bold mb-12 text-center">Journey</h2>
+                <div id="experience-timeline" class="relative max-w-3xl mx-auto border-l-2 border-border-dark pl-10 space-y-12"></div>
+            </div>
+        </section>
+
+        <section id="contact" class="section-light section-hidden px-4 py-20 sm:py-24">
+            <div class="container mx-auto max-w-2xl">
+                <h2 class="text-4xl font-bold mb-4 text-center">Contattami</h2>
+                <p class="text-lg text-gray-500 mb-8 text-center">Hai un'idea o un progetto? Parliamone.</p>
+                <form id="contact-form" class="space-y-6">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                        <input type="text" name="name" placeholder="Nome" class="form-input-light">
+                        <input type="email" name="email" placeholder="Email" class="form-input-light">
+                    </div>
+                    <textarea name="message" placeholder="Il tuo messaggio..." rows="5" class="form-input-light"></textarea>
+                    <div class="text-center">
+                        <button type="submit" class="bg-accent-orange text-white font-bold py-3 px-8 rounded-full hover:bg-opacity-90 transition-all duration-300 text-lg">
+                            Invia Messaggio
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </section>
+    </main>
+    
+    <footer class="section-light text-center py-10 text-gray-500 border-t border-border-light">
+        <p>&copy; <span id="year"></span> Simone Diaco. Costruito con codice e passione.</p>
+    </footer>
+    
+    <script type="x-shader/x-vertex" id="vertexShader">
+        void main() { gl_Position = vec4(position, 1.0); }
+    </script>
+    <script type="x-shader/x-fragment" id="fragmentShader">
+        uniform vec2 u_resolution;
+        uniform float u_time;
+        uniform vec2 u_mouse;
+        float random (in vec2 _st) { return fract(sin(dot(_st.xy, vec2(12.9898,78.233))) * 43758.5453123); }
+        float noise (in vec2 _st) {
+            vec2 i = floor(_st); vec2 f = fract(_st);
+            float a = random(i); float b = random(i + vec2(1.0, 0.0)); float c = random(i + vec2(0.0, 1.0)); float d = random(i + vec2(1.0, 1.0));
+            vec2 u = f * f * (3.0 - 2.0 * f);
+            return mix(a, b, u.x) + (c - a) * u.y * (1.0 - u.x) + (d - b) * u.x * u.y;
+        }
+        #define NUM_OCTAVES 5
+        float fbm ( in vec2 _st) {
+            float v = 0.0; float a = 0.5; vec2 shift = vec2(100.0); mat2 rot = mat2(cos(0.5), sin(0.5), -sin(0.5), cos(0.50));
+            for (int i = 0; i < NUM_OCTAVES; ++i) { v += a * noise(_st); _st = rot * _st * 2.0 + shift; a *= 0.5; }
+            return v;
+        }
+        void main() {
+            vec2 st = gl_FragCoord.xy / u_resolution.xy;
+            st.x *= u_resolution.x / u_resolution.y;
+            vec2 mouse_influence = st - u_mouse;
+            vec3 color = vec3(0.0);
+            vec2 q = vec2(0.); q.x = fbm(st + 0.1 * u_time); q.y = fbm(st + vec2(1.0));
+            vec2 r = vec2(0.); r.x = fbm(st + 1.0 * q + vec2(1.7,9.2) + 0.15 * u_time ); r.y = fbm(st + 1.0 * q + vec2(8.3,2.8) + 0.126 * u_time);
+            r += mouse_influence * 0.1;
+            float f = fbm(st+r);
+            // Warm color palette
+            color = mix(vec3(0.1, 0.05, 0.0), vec3(0.4, 0.1, 0.0), clamp((f*f)*4.0,0.0,1.0));
+            color = mix(color, vec3(0.9, 0.3, 0.1), clamp(length(q),0.0,1.0));
+            color = mix(color, vec3(1.0, 0.6, 0.2), clamp(length(r.x),0.0,1.0));
+            gl_FragColor = vec4((f*f*f+.6*f*f+.5*f)*color, 1.0);
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- FLUID BACKGROUND ---
+            let scene, camera, renderer, material;
+            const canvas = document.getElementById('fluid-canvas');
+            const clock = new THREE.Clock();
+            const mouse = new THREE.Vector2();
+            function initFluid() {
+                scene = new THREE.Scene();
+                camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0.1, 10);
+                renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+                material = new THREE.ShaderMaterial({
+                    uniforms: { u_time: { value: 0 }, u_resolution: { value: new THREE.Vector2() }, u_mouse: { value: new THREE.Vector2(0, 0) } },
+                    vertexShader: document.getElementById('vertexShader').textContent, fragmentShader: document.getElementById('fragmentShader').textContent,
+                });
+                const plane = new THREE.Mesh(new THREE.PlaneGeometry(2, 2), material);
+                scene.add(plane);
+                onWindowResize(); 
+                window.addEventListener('resize', onWindowResize);
+                window.addEventListener('mousemove', onMouseMove);
+                animateFluid();
+            }
+            function animateFluid() {
+                if (material) { material.uniforms.u_time.value = clock.getElapsedTime(); }
+                renderer.render(scene, camera);
+                requestAnimationFrame(animateFluid);
+            }
+            function onWindowResize() {
+                if (!renderer || !material) return; 
+                const hero = document.getElementById('hero-section');
+                renderer.setSize(hero.clientWidth, hero.clientHeight);
+                material.uniforms.u_resolution.value.set(hero.clientWidth, hero.clientHeight);
+            }
+            function onMouseMove(event) {
+                if(material) {
+                    const hero = document.getElementById('hero-section');
+                    mouse.x = (event.clientX / hero.clientWidth) * 2 - 1;
+                    mouse.y = - (event.clientY / hero.clientHeight) * 2 + 1;
+                    material.uniforms.u_mouse.value.lerp(mouse, 0.05);
+                }
+            }
+            initFluid();
+
+            // --- DATA ---
+            const data = {
+                help: `Comandi disponibili:\n  <span class="accent-text">about</span>     - Chi sono?\n  <span class="accent-text">skills</span>    - Vai alla sezione skills\n  <span class="accent-text">experience</span>- Vai alla sezione esperienze\n  <span class="accent-text">contact</span>   - Vai alla sezione contatti\n  <span class="accent-text">clear</span>     - Pulisce lo schermo`,
+                about: `Sono uno sviluppatore "fluido": un problem-solver che si muove agilmente tra backend, frontend, mobile e DevOps.`,
+                unknownCommand: (cmd) => `zsh: command not found: ${cmd}\nPer iniziare, digita 'help'.`,
+                skills: { 'Backend': ['Node.js', 'GO', 'Python', 'Java', 'PHP'], 'Frontend': ['React', 'Vue.js', 'JavaScript', 'HTML/CSS'], 'Mobile': ['Swift', 'Kotlin', 'Flutter'], 'Database': ['PostgreSQL', 'MariaDB', 'MongoDB', 'Redis'], 'DevOps': ['Docker', 'AWS', 'GCP', 'Git'], 'Specialized': ['ETL', 'OMOP CDM', 'HAPI FHIR'] },
+                experience: [ { role: 'Software Developer', company: 'Datawizard', period: 'Mar 2019 - Presente' }, { role: 'Web Designer', company: 'Varie Agenzie', period: 'Mag 2016 - Gen 2019' }, { role: 'Entertainer/DJ', company: 'Dolmen Hotel, Malta', period: 'Mag 2015 - Set 2015' } ]
+            };
+
+            // --- TERMINAL LOGIC ---
+            const terminalOutput = document.getElementById('terminal-output');
+            const terminalInput = document.getElementById('terminal-input');
+            const terminal = document.getElementById('terminal-content');
+            const commandHistory = [];
+            let historyIndex = -1;
+            const printToTerminal = (text, isCommand = false) => {
+                const line = document.createElement('div');
+                line.classList.add('terminal-line');
+                if (isCommand) { line.innerHTML = `<span class="prompt-path">~</span><span style="color: #EAEAEA;">$ &nbsp;</span>${text}`; } 
+                else { line.innerHTML = text; }
+                terminalOutput.appendChild(line);
+                terminal.scrollTop = terminal.scrollHeight;
+            };
+            const executeCommand = (cmd) => {
+                const command = cmd.toLowerCase().trim();
+                printToTerminal(cmd, true);
+                let output = data.unknownCommand(command);
+                if (command === 'help') output = data.help;
+                if (command === 'about') output = data.about;
+                if (command === 'skills') { output = `Navigazione verso la sezione skills...`; document.getElementById('skills').scrollIntoView({ behavior: 'smooth' }); }
+                if (command === 'experience') { output = `Navigazione verso la sezione experience...`; document.getElementById('experience').scrollIntoView({ behavior: 'smooth' }); }
+                if (command === 'contact') { output = `Navigazione verso la sezione contatti...`; document.getElementById('contact').scrollIntoView({ behavior: 'smooth' }); }
+                if (command === 'clear') { terminalOutput.innerHTML = ''; return; }
+                if (command === '') return;
+                printToTerminal(output);
+};
+            terminalInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    const command = terminalInput.value;
+                    if (command) { commandHistory.unshift(command); historyIndex = -1; }
+                    executeCommand(command);
+                    terminalInput.value = '';
+                } else if (e.key === 'ArrowUp') {
+                    if (historyIndex < commandHistory.length - 1) { historyIndex++; terminalInput.value = commandHistory[historyIndex]; }
+                } else if (e.key === 'ArrowDown') {
+                    if (historyIndex > 0) { historyIndex--; terminalInput.value = commandHistory[historyIndex]; } 
+                    else { historyIndex = -1; terminalInput.value = ''; }
+                }
+            });
+
+            // --- PAGE SETUP ---
+            printToTerminal(`Per iniziare, digita 'help'`);
+            document.getElementById('year').textContent = new Date().getFullYear();
+            Object.entries(data.skills).forEach(([category, skills]) => {
+                const div = document.createElement('div');
+                div.className = 'card-light';
+                div.innerHTML = `<h3 class="text-2xl font-bold accent-text mb-3">${category}</h3><p class="text-gray-500 leading-relaxed">${skills.join(' &middot; ')}</p>`;
+                document.getElementById('skills-grid').appendChild(div);
+            });
+            data.experience.forEach(item => {
+                const div = document.createElement('div');
+                div.className = 'relative';
+                div.innerHTML = `<div class="timeline-dot-dark"></div>
+                                 <h3 class="text-2xl font-bold">${item.role} <span class="text-gray-400 font-normal text-xl">@ ${item.company}</span></h3>
+                                 <p class="text-md text-gray-400 mb-2">${item.period}</p>`;
+                document.getElementById('experience-timeline').appendChild(div);
+            });
+            document.getElementById('contact-form').addEventListener('submit', (e) => {
+                e.preventDefault();
+                alert('Grazie per il tuo messaggio!');
+                e.target.reset();
+            });
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('section-visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.1 });
+            document.querySelectorAll('.section-hidden').forEach(section => observer.observe(section));
+        });
+    </script>
+</body>
+</html>
